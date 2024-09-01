@@ -1,0 +1,17 @@
+import random
+
+chances = 5
+a = int(input("Enter the starting range : "))
+b = int(input("Enter the ending range   : "))
+correctNumber = random.randint(a,b)
+
+while chances > 0:
+    guess = int(input("Pick a number to guess   : "))
+    if correctNumber == guess:
+        print("You guessed the right number")
+        break
+    else:
+        print("You have ", chances-1, " left")
+    chances -= 1
+
+print("The correct number was : ", correctNumber)
