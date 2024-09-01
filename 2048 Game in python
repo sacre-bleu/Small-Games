@@ -1,0 +1,120 @@
+import random
+
+def initialize_game():
+    mat = [[0] * 4 for _ in range(4)]
+    mat = assign_2(mat)
+    mat = assign_2(mat)
+    return mat
+
+def assign_2(mat):
+    empty_cells = [(i, j) for i in range(4) for j in range(4) if mat[i][j] == 0]
+    if empty_cells:
+        i, j = random.choice(empty_cells)
+        mat[i][j] = 2
+    return mat
+
+def display_matrix(mat):
+    for i in range(4):
+        print("[", end=" ")
+        for j in range(4):
+            print(f"{mat[i][j]:4}", end=" ")
+        print(" ]")
+    print()
+
+def compress(mat):
+    new_mat = [[0] * 4 for _ in range(4)]
+    for i in range(4):
+        position = 0
+        for j in range(4):
+            if mat[i][j] != 0:
+                new_mat[i][position] = mat[i][j]
+                position += 1
+    return new_mat
+
+def merge(mat):
+    for i in range(4):
+        for j in range(3):
+            if mat[i][j] == mat[i][j + 1] and mat[i][j] != 0:
+                mat[i][j] *= 2
+                mat[i][j + 1] = 0
+    return mat
+
+def reverse(mat):
+    new_mat = [row[::-1] for row in mat]
+    return new_mat
+
+def transpose(mat):
+    new_mat = [[mat[j][i] for j in range(4)] for i in range(4)]
+    return new_mat
+
+def move_left(mat):
+    mat = compress(mat)
+    mat = merge(mat)
+    mat = compress(mat)
+    return mat
+
+def move_right(mat):
+    mat = reverse(mat)
+    mat = move_left(mat)
+    mat = reverse(mat)
+    return mat
+
+def move_up(mat):
+    mat = transpose(mat)
+    mat = move_left(mat)
+    mat = transpose(mat)
+    return mat
+
+def move_down(mat):
+    mat = transpose(mat)
+    mat = move_right(mat)
+    mat = transpose(mat)
+    return mat
+
+def check_win(mat):
+    for row in mat:
+        if 2048 in row:
+            print("You win!")
+            return True
+    return False
+
+def check_lose(mat):
+    for i in range(4):
+        for j in range(4):
+            if mat[i][j] == 0:
+                return False
+            if i < 3 and mat[i][j] == mat[i + 1][j]:
+                return False
+            if j < 3 and mat[i][j] == mat[i][j + 1]:
+                return False
+    print("No more moves available. You lose!")
+    return True
+
+def play_game():
+    matrix = initialize_game()
+    display_matrix(matrix)
+
+    while True:
+        move = input("Make a move (W/A/S/D): ").lower()
+
+        if move == 'w':
+            matrix = move_up(matrix)
+        elif move == 'a':
+            matrix = move_left(matrix)
+        elif move == 's':
+            matrix = move_down(matrix)
+        elif move == 'd':
+            matrix = move_right(matrix)
+        else:
+            print("Invalid input. Please use 'W', 'A', 'S', or 'D'.")
+            continue
+
+        matrix = assign_2(matrix)
+        display_matrix(matrix)
+
+        # Check for win or lose
+        if check_win(matrix) or check_lose(matrix):
+            break
+
+if __name__ == "__main__":
+    play_game()
