@@ -112,7 +112,6 @@ def play_game():
         matrix = assign_2(matrix)
         display_matrix(matrix)
 
-        # Check for win or lose
         if check_win(matrix) or check_lose(matrix):
             break
 
